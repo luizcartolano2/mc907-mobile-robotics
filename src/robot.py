@@ -11,6 +11,8 @@ class Robot():
         self.us_handle, self.vision_handle, self.laser_handle = self.start_sensors()
         self.motors_handle = self.start_motors()
         self.robot_handle = self.start_robot()
+        self.last_left_vel = 0
+        self.last_right_vel = 0
 
     def start_sim(self):
         """
@@ -172,6 +174,7 @@ class Robot():
             Args:
                 vel: The velocity to be applied in the motor (rad/s)
         """
+        self.last_left_vel = vel
         vrep.simxSetJointTargetVelocity(self.clientID, self.motors_handle["left"], vel, vrep.simx_opmode_streaming)
 
     def set_right_velocity(self, vel):
@@ -180,8 +183,14 @@ class Robot():
             Args:
                 vel: The velocity to be applied in the motor (rad/s)
         """
+        self.last_right_vel = vel
         vrep.simxSetJointTargetVelocity(self.clientID, self.motors_handle["right"], vel, vrep.simx_opmode_streaming)
 
+        
+    def get_linear_velocity(self):
+        
+        return last_left_vel * self.WHEEL_RADIUS, last_right_vel * self.WHEEL_RADIUS
+        
     def set_velocity(self, V, W):
         """
             Sets a linear and a angular velocity on the robot.
