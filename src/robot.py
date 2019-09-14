@@ -189,7 +189,7 @@ class Robot():
         
     def get_linear_velocity(self):
         
-        return last_left_vel * self.WHEEL_RADIUS, last_right_vel * self.WHEEL_RADIUS
+        return self.last_left_vel * self.WHEEL_RADIUS, self.last_right_vel * self.WHEEL_RADIUS
         
     def set_velocity(self, V, W):
         """
