@@ -10,7 +10,7 @@ class Robot():
         self.ROBOT_WIDTH = 0.381
         self.WHEEL_RADIUS = 0.195/2.0
         self.SERVER_IP = "127.0.0.1"
-        self.SERVER_PORT = 25000
+        self.SERVER_PORT = 19997
         self.clientID = self.start_sim()
         self.us_handle, self.vision_handle, self.laser_handle = self.start_sensors()
         self.motors_handle = self.start_motors()
@@ -38,7 +38,18 @@ class Robot():
         vrep.simxStopSimulation(self.clientID, vrep.simx_opmode_blocking)
 
     def reset_sim(self):
-        return
+        # stop the current simulation
+        stop = vrep.simxStopSimulation(self.clientID,vrep.simx_opmode_blocking)
+
+        time.sleep(1)
+        # start a new simulation
+        start = vrep.simxStartSimulation(self.clientID, vrep.simx_opmode_blocking)
+        print("Resetting Simulation. Stop Code: {} Start Code: {}".format(stop, start))
+
+        # get handlers
+        self.us_handle, self.vision_handle, self.laser_handle = self.start_sensors()
+        self.motors_handle = self.start_motors()
+        self.robot_handle = self.start_robot()
 
     def get_connection_status(self):
         """
