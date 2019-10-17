@@ -51,6 +51,12 @@ class Robot():
         self.motors_handle = self.start_motors()
         self.robot_handle = self.start_robot()
 
+        # get observations
+        observations = {}
+        observations['proxy_sensor'] = [np.array(self.read_ultrassonic_sensors())]
+
+        return observations
+
     def step(self, action):
         # first we take the action
         self.set_left_velocity(action[0])
@@ -62,13 +68,19 @@ class Robot():
 
         reward = {}
         reward['proxy_sensor'] = (np.array(observations['proxy_sensor']) < 0.7).sum() * -2
+        reward['proxy_sensor'] = (np.array(observations['proxy_sensor']) < 0.1).sum() * -5
         reward['proxy_sensor'] += (np.array(observations['proxy_sensor'] == 0)).sum() * -10
 
         # rewarded for movement
         r = np.clip(np.sum(np.absolute(action)) * 2, 0, 2)
         reward['proxy_sensor'] += r
 
-        return observations, reward
+        if np.any(np.array(observations['proxy_sensor']) < 0.1):
+            done = True
+        else:
+            done = False
+
+        return observations, reward, done
 
     def get_connection_status(self):
         """
@@ -254,6 +266,8 @@ class Robot():
         return orientation
 
 if __name__ == '__main__':
+    pass
     rb = Robot()
+    # import pdb; pdb.set_trace()
     rb.step([0,0])
     # import pdb; pdb.set_trace()
