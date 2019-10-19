@@ -6,7 +6,7 @@ import matplotlib.style
 import pandas as pd
 import sys
 from collections import defaultdict
-import plotting
+import plotting_r as plotting
 
 matplotlib.style.use('ggplot')
 
@@ -38,7 +38,6 @@ def qLearning(env, num_episodes, discount_factor=1.0, alpha=0.6, epsilon=0.1):
     Finds the optimal greedy policy while improving
     following an epsilon-greedy policy
     """
-    import pdb; pdb.set_trace()
     # Action value function
     # A nested dictionary that maps
     # state -> (action -> action-value).
@@ -86,8 +85,8 @@ def qLearning(env, num_episodes, discount_factor=1.0, alpha=0.6, epsilon=0.1):
             reward = reward['proxy_sensor']
 
             # Update statistics
-            stats.episode_rewards[i_episode] += reward
-            stats.episode_lengths[i_episode] = t
+            stats.episode_rewards[ith_episode] += reward
+            stats.episode_lengths[ith_episode] = t
 
             # TD Update
             best_next_action = np.argmax(Q[next_state])

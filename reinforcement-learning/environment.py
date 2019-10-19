@@ -41,7 +41,7 @@ class Robot():
         # stop the current simulation
         stop = vrep.simxStopSimulation(self.clientID,vrep.simx_opmode_blocking)
 
-        time.sleep(1)
+        time.sleep(5)
         # start a new simulation
         start = vrep.simxStartSimulation(self.clientID, vrep.simx_opmode_blocking)
         print("Resetting Simulation. Stop Code: {} Start Code: {}".format(stop, start))
