@@ -59,6 +59,7 @@ def qLearning(env, num_episodes, discount_factor=1.0, alpha=0.6, epsilon=0.1):
         # Reset the environment and pick the first action
         state = env.reset_sim()
         state = tuple(state['proxy_sensor'][0])
+        print("ith_episode: ", ith_episode)
         for t in itertools.count():
 
             # get probabilities of all actions from current state
@@ -83,6 +84,8 @@ def qLearning(env, num_episodes, discount_factor=1.0, alpha=0.6, epsilon=0.1):
 
             next_state = tuple(next_state['proxy_sensor'][0])
             reward = reward['proxy_sensor']
+            print("\t Reward: ", reward)
+            print("\t T: ", t)
 
             # Update statistics
             stats.episode_rewards[ith_episode] += reward
@@ -95,7 +98,7 @@ def qLearning(env, num_episodes, discount_factor=1.0, alpha=0.6, epsilon=0.1):
             Q[state][action] += alpha * td_delta
 
             # done is True if episode terminated
-            if done:
+            if done or t > 10000:
                 break
 
             state = next_state
@@ -104,4 +107,5 @@ def qLearning(env, num_episodes, discount_factor=1.0, alpha=0.6, epsilon=0.1):
 
 if __name__ == '__main__':
     env = Robot()
-    Q, stats = qLearning(env, 1000)
+    Q, stats = qLearning(env, 10)
+    plotting.plot_episode_stats(stats)

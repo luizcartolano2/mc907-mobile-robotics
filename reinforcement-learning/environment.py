@@ -17,6 +17,7 @@ class Robot():
         self.robot_handle = self.start_robot()
         self.last_left_vel = 0
         self.last_right_vel = 0
+        self.last_pose = None
 
     def start_sim(self):
         """
@@ -67,13 +68,26 @@ class Robot():
         observations['proxy_sensor'] = [np.array(self.read_ultrassonic_sensors())]
 
         reward = {}
-        reward['proxy_sensor'] = (np.array(observations['proxy_sensor']) < 0.7).sum() * -2
-        reward['proxy_sensor'] = (np.array(observations['proxy_sensor']) < 0.1).sum() * -5
-        reward['proxy_sensor'] += (np.array(observations['proxy_sensor'] == 0)).sum() * -10
+        reward['proxy_sensor'] = (np.array(observations['proxy_sensor']) < 0.7).sum() * -5
+        reward['proxy_sensor'] = (np.array(observations['proxy_sensor']) < 0.1).sum() * -10
+        reward['proxy_sensor'] += (np.array(observations['proxy_sensor'] == 0)).sum() * -100
 
         # rewarded for movement
-        r = np.clip(np.sum(np.absolute(action)) * 2, 0, 2)
+        r = np.clip(np.sum(np.absolute(action)) * 4, 0, 2)
         reward['proxy_sensor'] += r
+
+        if self.last_pose is None:
+            self.last_pose = self.get_current_position()
+        else:
+            current_positon = self.get_current_position()
+            dist = np.sqrt((current_positon[0] - self.last_pose[0])**2 + (current_positon[1] - self.last_pose[1])**2)
+
+            if dist < 0.1:
+                reward['proxy_sensor'] -= 50
+                self.last_pose = current_positon
+            else:
+                reward['proxy_sensor'] += 50
+                self.last_pose = current_positon
 
         if np.any(np.array(observations['proxy_sensor']) < 0.1):
             done = True
