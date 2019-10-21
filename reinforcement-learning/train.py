@@ -1,3 +1,4 @@
+import logging
 from environment import Robot
 import numpy as np
 import itertools
@@ -10,7 +11,9 @@ import plotting_r as plotting
 
 matplotlib.style.use('ggplot')
 
-SPEED = 1
+SPEED = 0.7
+logging.basicConfig(filename='reinforcement-learning.log', filemode='w', level=logging.DEBUG)
+
 
 def createEpsilonGreedyPolicy(Q, epsilon, num_actions):
     """
@@ -32,7 +35,7 @@ def createEpsilonGreedyPolicy(Q, epsilon, num_actions):
 
     return policyFunction
 
-def qLearning(env, num_episodes, discount_factor=1.0, alpha=0.6, epsilon=0.1):
+def qLearning(env, num_episodes, discount_factor=0.1, alpha=0.01, epsilon=0.001):
     """
     Q-Learning algorithm: Off-policy TD control.
     Finds the optimal greedy policy while improving
@@ -59,33 +62,36 @@ def qLearning(env, num_episodes, discount_factor=1.0, alpha=0.6, epsilon=0.1):
         # Reset the environment and pick the first action
         state = env.reset_sim()
         state = tuple(state['proxy_sensor'][0])
-        print("ith_episode: ", ith_episode)
+        logging.debug('Ith_Episode: {}'.format(ith_episode))
         for t in itertools.count():
+
+            logging.debug('\tt_episode: {}'.format(t))
 
             # get probabilities of all actions from current state
             action_probabilities = policy(state)
+            logging.debug('\t\taction_probabilities: {}'.format(action_probabilities))
 
             # choose action according to
             # the probability distribution
-            action = np.random.choice(np.arange(len(action_probabilities)),p = action_probabilities)
+            action = np.random.choice(np.arange(len(action_probabilities)), p=action_probabilities)
+            logging.debug("\t\tActions: {}".format(action))
             if action == 0:
-                action = [SPEED, SPEED]
+                action_env = [1.3, 1.3]
             elif action == 1:
-                action = [0, SPEED]
+                action_env = [0.4, 1.3]
             elif action == 2:
-                action = [SPEED, 0]
+                action_env = [1.3, 0.4]
             elif action == 3:
-                action = [0,0]
+                action_env = [0,0]
             else:
                 raise Exception("Invalid action!")
 
             # take action and get reward, transit to next state
-            next_state, reward, done = env.step(action)
+            next_state, reward, done = env.step(action_env)
 
             next_state = tuple(next_state['proxy_sensor'][0])
             reward = reward['proxy_sensor']
-            print("\t Reward: ", reward)
-            print("\t T: ", t)
+            logging.debug("\t\tReward: {}".format(reward))
 
             # Update statistics
             stats.episode_rewards[ith_episode] += reward
@@ -93,19 +99,24 @@ def qLearning(env, num_episodes, discount_factor=1.0, alpha=0.6, epsilon=0.1):
 
             # TD Update
             best_next_action = np.argmax(Q[next_state])
+            logging.debug("\t\tBest Next Action: {}".format(best_next_action))
             td_target = reward + discount_factor * Q[next_state][best_next_action]
+            logging.debug("\t\tTD Target: {}".format(td_target))
             td_delta = td_target - Q[state][action]
+            logging.debug("\t\tTD Delta: {}".format(td_delta))
             Q[state][action] += alpha * td_delta
 
             # done is True if episode terminated
-            if done or t > 10000:
+            if done:
                 break
 
             state = next_state
+
+    env.destroy_sim()
 
     return Q, stats
 
 if __name__ == '__main__':
     env = Robot()
-    Q, stats = qLearning(env, 10)
+    Q, stats = qLearning(env, 1000)
     plotting.plot_episode_stats(stats)
