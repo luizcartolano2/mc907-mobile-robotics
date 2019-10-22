@@ -80,7 +80,7 @@ class Robot():
         reward['proxy_sensor'] = (np.array(observations['proxy_sensor']) < 0.1).sum() * -30
 
         # rewarded for movement
-        r = np.clip(np.sum(np.absolute(action)) * 4, 0, 2)
+        r = np.clip(np.sum(np.absolute(action)) * 3, 0, 2)
         reward['proxy_sensor'] += r
 
         if self.last_pose is None:
@@ -96,7 +96,7 @@ class Robot():
             #     reward['proxy_sensor'] += 50
             #     self.last_pose = current_positon
 
-        if np.any(np.array(observations['proxy_sensor']) < 0.1):
+        if np.any(np.array(observations['proxy_sensor']) < 0.07):
             reward['proxy_sensor'] -= 100000
             done = True
         else:

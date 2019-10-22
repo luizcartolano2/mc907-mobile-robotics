@@ -1,3 +1,4 @@
+import ast
 import logging
 from environment import Robot
 import numpy as np
@@ -8,7 +9,7 @@ import pandas as pd
 import sys
 from collections import defaultdict
 import plotting_r as plotting
-
+import json
 matplotlib.style.use('ggplot')
 
 SPEED = 0.7
@@ -35,7 +36,7 @@ def createEpsilonGreedyPolicy(Q, epsilon, num_actions):
 
     return policyFunction
 
-def qLearning(env, num_episodes, discount_factor=0.1, alpha=0.01, epsilon=0.001):
+def qLearning(env, num_episodes, discount_factor=1, alpha=0.01, epsilon=0.1):
     """
     Q-Learning algorithm: Off-policy TD control.
     Finds the optimal greedy policy while improving
@@ -44,7 +45,14 @@ def qLearning(env, num_episodes, discount_factor=0.1, alpha=0.01, epsilon=0.001)
     # Action value function
     # A nested dictionary that maps
     # state -> (action -> action-value).
-    Q = defaultdict(lambda: np.zeros(4))
+    # import pdb; pdb.set_trace()
+
+    try:
+        with open('model.txt', 'r') as f:
+            json_file = json.load(f)
+        Q = {ast.literal_eval(k): np.array(ast.literal_eval(v)) for k, v in json_file.items()}
+    except:
+        Q = defaultdict(lambda: np.zeros(3))
 
     # Keeps track of useful statistics
     stats = plotting.EpisodeStats(
@@ -54,7 +62,7 @@ def qLearning(env, num_episodes, discount_factor=0.1, alpha=0.01, epsilon=0.001)
 
     # Create an epsilon greedy policy function
     # appropriately for environment action space
-    policy = createEpsilonGreedyPolicy(Q, epsilon, 4)
+    policy = createEpsilonGreedyPolicy(Q, epsilon, 3)
 
     # For every episode
     for ith_episode in range(num_episodes):
@@ -76,13 +84,11 @@ def qLearning(env, num_episodes, discount_factor=0.1, alpha=0.01, epsilon=0.001)
             action = np.random.choice(np.arange(len(action_probabilities)), p=action_probabilities)
             logging.debug("\t\tActions: {}".format(action))
             if action == 0:
-                action_env = [1.3, 1.3]
+                action_env = [1.5, 1.5]
             elif action == 1:
-                action_env = [0.4, 1.3]
+                action_env = [0.5, 1.5]
             elif action == 2:
-                action_env = [1.3, 0.4]
-            elif action == 3:
-                action_env = [0,0]
+                action_env = [1.5, 0.5]
             else:
                 raise Exception("Invalid action!")
 
@@ -111,6 +117,7 @@ def qLearning(env, num_episodes, discount_factor=0.1, alpha=0.01, epsilon=0.001)
                 break
 
             state = next_state
+        epsilon -= 0.001
 
     env.destroy_sim()
 
@@ -118,5 +125,11 @@ def qLearning(env, num_episodes, discount_factor=0.1, alpha=0.01, epsilon=0.001)
 
 if __name__ == '__main__':
     env = Robot()
-    Q, stats = qLearning(env, 1000)
+
+    Q, stats = qLearning(env, 1)
+
+    # save the learned model
+    with open('model.txt', 'w') as f:
+        json.dump({str(k): str(tuple(v)) for k, v in Q.items()}, f)
+
     plotting.plot_episode_stats(stats)
