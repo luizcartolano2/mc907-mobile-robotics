@@ -51,6 +51,9 @@ class Robot():
         start = vrep.simxStartSimulation(self.clientID, vrep.simx_opmode_blocking)
         print("Resetting Simulation. Stop Code: {} Start Code: {}".format(stop, start))
 
+        if start != 0:
+            import pdb; pdb.set_trace()
+
         # put zero at the robot motors
         self.set_left_velocity(0)
         self.set_right_velocity(0)
@@ -76,11 +79,11 @@ class Robot():
         observations['proxy_sensor'] = [np.array(self.read_ultrassonic_sensors())]
 
         reward = {}
-        reward['proxy_sensor'] = (np.array(observations['proxy_sensor']) < 0.7).sum() * -10
-        reward['proxy_sensor'] = (np.array(observations['proxy_sensor']) < 0.1).sum() * -30
+        reward['proxy_sensor'] = (np.array(observations['proxy_sensor']) < 0.7).sum() * -2
+        reward['proxy_sensor'] = (np.array(observations['proxy_sensor']) < 0.2).sum() * -10
 
         # rewarded for movement
-        r = np.clip(np.sum(np.absolute(action)) * 3, 0, 2)
+        r = np.clip(np.sum(np.absolute(action)) * 2, 0, 2)
         reward['proxy_sensor'] += r
 
         if self.last_pose is None:
@@ -96,7 +99,7 @@ class Robot():
             #     reward['proxy_sensor'] += 50
             #     self.last_pose = current_positon
 
-        if np.any(np.array(observations['proxy_sensor']) < 0.07):
+        if np.any(np.array(observations['proxy_sensor']) < 0.1):
             reward['proxy_sensor'] -= 100000
             done = True
         else:

@@ -47,12 +47,17 @@ def qLearning(env, num_episodes, discount_factor=1, alpha=0.01, epsilon=0.1):
     # state -> (action -> action-value).
     # import pdb; pdb.set_trace()
 
-    try:
-        with open('model.txt', 'r') as f:
-            json_file = json.load(f)
-        Q = {ast.literal_eval(k): np.array(ast.literal_eval(v)) for k, v in json_file.items()}
-    except:
-        Q = defaultdict(lambda: np.zeros(3))
+    Q = defaultdict(lambda: np.zeros(3))
+
+    with open('model.txt', 'r') as f:
+        json_file = json.load(f)
+    old_dict = {ast.literal_eval(k): np.array(ast.literal_eval(v)) for k, v in json_file.items()}
+
+    for v, k in old_dict.items():
+        Q[v][0] = k[0]
+        Q[v][1] = k[1]
+        Q[v][2] = k[2]
+
 
     # Keeps track of useful statistics
     stats = plotting.EpisodeStats(
@@ -126,10 +131,13 @@ def qLearning(env, num_episodes, discount_factor=1, alpha=0.01, epsilon=0.1):
 if __name__ == '__main__':
     env = Robot()
 
-    Q, stats = qLearning(env, 1)
+    Q, stats = qLearning(env, 500)
 
-    # save the learned model
-    with open('model.txt', 'w') as f:
-        json.dump({str(k): str(tuple(v)) for k, v in Q.items()}, f)
+    try:
+        # save the learned model
+        with open('model.txt', 'w') as f:
+            json.dump({str(k): str(tuple(v)) for k, v in Q.items()}, f)
+    except:
+        import pdb; pdb.set_trace()
 
     plotting.plot_episode_stats(stats)
