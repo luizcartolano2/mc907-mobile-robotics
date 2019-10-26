@@ -1,6 +1,7 @@
 .DS_Store
 **/.DS_Store
 **/**/.DS_Store
+model.txt
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
