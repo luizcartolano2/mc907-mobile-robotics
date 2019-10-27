@@ -1,6 +1,6 @@
 import ast
 import logging
-from environment import Robot
+from .environment import Robot
 import numpy as np
 import itertools
 import matplotlib
@@ -8,7 +8,7 @@ import matplotlib.style
 import pandas as pd
 import sys
 from collections import defaultdict
-import plotting_r as plotting
+from . import plotting_r as plotting
 import json
 matplotlib.style.use('ggplot')
 

@@ -3,7 +3,7 @@ import time
 import numpy as np
 import matplotlib.pyplot as plt
 import sys, time
-import vrep
+from . import vrep
 
 class Robot():
     def __init__(self):
