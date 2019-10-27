@@ -1,4 +1,4 @@
-# MC907 - Mobile Robotics
+# MC907 - Mobile Robotics - Project 2
 
 Repository to share projects and studies on mobile robotics. Course taught by the Institute of Computing of Unicamp.
 
