@@ -5,3 +5,4 @@ sklearn
 scikit-fuzzy 
 torch
 torchvision
+pandas
