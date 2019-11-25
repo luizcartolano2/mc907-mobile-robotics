@@ -6,3 +6,4 @@ scikit-fuzzy
 torch
 torchvision
 pandas
+scipy
