@@ -1,3 +1,7 @@
+flownets_EPE1.951.pth.tar
+model/
+t000102050809_v04060710_im184x608_s5x7_b8_rnn1000_optAdagrad_lr0.0005.model.train
+
 dataset/
 *.pptx
 .DS_Store
