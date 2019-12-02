@@ -1,0 +1,24 @@
+\section{Results and Discussion} \label{sec:res-dic}
+    In this section we will first present all the results obtained during the implementation of the implemented solution, including tables and graphs generated. Once introduced, they will be discussed and compared.
+    
+    \subsection{Results} \label{sec:resultados}
+        At Figures \ref{fig:train90} and \ref{fig:train150} we are able to see the training losses of the two different experiences made with the implemented neural network. The Figure \ref{fig:train90} shows the training loss for 90 epochs when we didn't use the pretrained weigths of FlowNet, while the Figure \ref{fig:train150}, shows the results for 150 epochs using the pretrained weigths of FlowNet. These results, as we are going to further discuss were a lot worst than the obtained by \cite{wang2017deepvo}. 
+        
+        After fit the model we work on validate the obtained weights on a different sequence that were designated as a test dataset. The first measure we did were measure the accuracy of the system. The accuracy were calculated by the follow equation:
+        \begin{equation}
+            acc = \frac{1}{N} \sum_{i=1}^{N}\sum_{k=1}^{t} \left\| \hat{p_k} - p_k \right\|^{2}_2 + \left\| \hat{\varphi_k} - \varphi_k \right\|^{2}_2
+        \end{equation}
+        And we obtained an accuracy of \emph{54.70\%}. We also analyse the individual erros for position (x,y,z) and orientation, obtaining results of \emph{9.81\%} and \emph{58.84\%}.
+        
+        Lastly, we can present as a result the odometry provided by our system ploted with the original position, the ground truth one. Figures \ref{fig:seq2}, \ref{fig:seq4} and \ref{fig:seq5} shows that results. The blue line on the figures show the ground truth position given by the simulator and the green line the odometry given by our model.
+        
+    \subsection{Discussion} \label{sec:discussao}
+        Firts we are going to compare the training losses obtained in our experiment for two different scenarios under the same dataset. Comparing Figures \ref{fig:train90} and \ref{fig:train150}, it's possible to realize that the pretrained weigths of FlowNet weren't a big differential to fitting the model. Both of the experiments shows signals of over-fit, because the validation loss don't reduce as the same ratio of training loss. Actually, the validation still the same all over both experiments. The main reason of that results are, very likely, the number of images and poses used on training, that were far bellow the necessary.
+        
+        Since we have an experiment that we were looking for to reproduce, we can also compare our results with them. If we look for Figure \ref{fig:10}, we realized that Wang's model were a lot better fitted and different of ours didn’t show any signal of over-fit. A main difference in both experiments is the number of images used for training, at \cite{wang2017deepvo} they used almost 7 thousand images from the Kitti dataset, while we used among 2 thousand images, which reinforce our previous idea that the main reason of over-fit were the number of images used for fit the model.
+        
+        Analysing the accuracy results lead us to a very interesting perspective about the system performance, that is well better when predict angles deslocation than position. The most likely reason for that is on how images were collected in the simulator, the deslocation between to images is very abrupt.
+        
+        Lastly is time to analyse the most visual of all results we obtained, the images comparing the ground truth and the odometry. If we look for Figure \ref{fig:seq2} it's possible to see that the ground truth has a lot of abrupt changes on both axis directions and this changes are not identified by the model. Figure \ref{fig:seq4}, on the other hand, has a much smoother trajectory, what makes the odometry a lot more accurate, but still not able to manage a sharp turn. Figure \ref{fig:seq5} has the smoothest of all the trajectories, even on that the model were far away to show a good preview.
+        
+        The same way compared the training losses of our project with Wang's, we can also compare our odometry with the one obtained by Wang in \cite{wang2017deepvo} (Figure \ref{fig:11}), even showing some big differences between the ground truth and the odometry the system is much more accurate than the one we obtained. There are few possible reasons for that. First, the fact that our model had over-fit. Second, the images fom the Kitti dataset our way more friendly than the ones from the simulator, since they are obtained by an autonomous car which made it smoother, with a constant velocity and also, the images are rectified (Image rectification is a transformation process used to project images onto a common image plane).

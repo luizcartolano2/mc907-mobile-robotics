@@ -1,0 +1,74 @@
+\section{Materials and methods} \label{sec:metodos}
+    In this section we will explain in more detail the problem modeling, ie the machine learning techniques implemented in the project and how they were specified.
+    
+    \subsection{Related Work - Deep VO}
+        The paper \cite{wang2017deepvo} presents a novel end-to-end framework for monocular VO by using deep Recurrent Convolutional Neural Networks (RCNNs) \cite{liang2015recurrent}. Since it is trained and deployed in an end-to-end manner, it infers poses directly from a sequence of raw RGB images (videos) without adopting any module in the conventional VO pipeline. Based on the RCNNs, it not only automatically learns effective feature representation for the VO problem through Convolutional Neural Networks, but also implicitly models sequential dynamics and relations using deep Recurrent Neural Networks. The framework has been tested under the Kitti Dataset \footnote{\url{http://www.cvlibs.net/datasets/kitti/eval_odometry.php}}, showing great results.
+        
+        The model is mainly composed of CNN based feature extraction, as previous presented in \cite{chen2016deep}, and RNN based sequential modelling, as shown in \cite{chung2015recurrent}. The architecture of the proposed VO system is shown in Figure \ref{fig:8}, it takes a monocular image sequence as input. Two consecutive images are stacked together to form a tensor for the deep RCNN to learn how to extract motion information and estimate poses. The VO system develops over time and estimates new poses as images are captured. 
+        
+        The image feature extraction of is done by a CNN, which configuration is shown at Figure \ref{fig:9}. The CNN takes raw RGB images instead of pre-processed counterparts, such as optical flow or depth images, as input because the network is trained to learn an efficient feature representation with reduced dimensionality for the VO.
+        
+        Following the CNN, a deep RNN is designed to conduct sequential learning, i.e., to model dynamics and relations among a sequence of CNN features. Since the RNN is capable of modelling dependencies in a sequence, it is well suited to the VO problem which involves temporal model (motion model) and sequential data (image sequence). 
+        
+        To learn the hyperparameters $\theta$ of the DNNs, the Euclidean distance between the ground truth pose ($p_k$ ,$\varphi_k$) at time $k$ and its estimated one ($\text{\^{p}}_k$ ,$\hat{\varphi_k}$) is minimised. The loss function is composed of Mean Square Error (MSE) of all positions p and orientations :
+        \begin{equation}
+            \theta^* = \underset{\theta}{\mathrm{argmin}} \frac{1}{N} \sum_{i=1}^{N}\sum_{k=1}^{t} \left\| \hat{p_k} - p_k \right\|^{2}_2 + k \cdot \left\| \hat{\varphi_k} - \varphi_k \right\|^{2}_2
+            \label{eq:MSE}
+        \end{equation}
+        
+         In Figure \ref{fig:10}, the losses results of the models are given for both training and validate datasets. As shown in the fig., the loss significantly reduces with time, and, once the training and validation losses shown a similar behavior we can also say that is free of overfiting, so, the model is well-fit.
+         
+         The Figures \ref{fig:11} and \ref{fig:12} show us the obtained maps for the framework for both training and test datasets. As we can see in the figures, the obtained odometry from the system is very close to the ground truth position, showing how great the system performs. The system is analysed according to the KITTI VO/SLAM evaluation metrics, i.e., averaged Root Mean Square Errors (RMSEs) of the translational and rotational errors for all subsequences of lengths ranging. The average RMSEs of the estimated VO are given in Figure \ref{fig:13}. Al- though the result of the DeepVO is worst than that of the stereo VISO2 (VISO2\_S), it is consistently better than the monocular VISO2 (VISO2\_M).
+         
+         The paper presents a novel end-to-end monocular VO algorithm based on Deep Learning, that does not depend on any module in the conventional VO algorithms (even camera calibration) for pose estimation and it is trained in an end-to-end manner, there is no need to carefully tune the parameters of the VO system. Based on the KITTI VO benchmark, it is verified that it can produce accurate VO results with precise scales and work well in completely new scenarios.
+         
+         For this project, we aim to reproduce the paper approach using images and poses obtained at the AirSim, an open source simulator for autonomous vehicles built on Unreal Engine/Unity, from Microsoft AI\&Research \footnote{\label{ref:note1}\url{https://github.com/microsoft/AirSim}}.
+         
+    \subsection{Project Dataset}
+        \subsubsection{Data Collection}
+            In order to create our own \emph{dataset} to perform the article model we had use the Microsoft AirSim Simulator to generate both images and poses.
+            
+            Six sequences were generated under three different scenarios: Neighborhood(Figure \ref{fig:neig}), Africa (Figure \ref{fig:africa}) and LandscapeMountains(Figure \ref{fig:mountain}). 
+            
+            The simulator were used at the \emph{ComputerVision} mode and the cameras controlled via keyboard. Each sequence has around four hundred pictures, making a total of around two thousand images for the training set.
+        
+        \subsubsection{Images Data Prerocessing}
+            The first stage of image preprocessing was eliminate all failed pictures given by the simulator, excluding them from both pictures and pose lists.
+            
+            After that, as we read the images we convert them to grayscale and normalize their pixels values, in a range that goes from -0.5 to 0.5 in order to be able to use the pretrained weight of FlowNet, all of it were done using the OpenCV library.
+            
+            At least, we concatenated the pictures two by two, once that the two images will going to work as input for our Neural Network.
+            
+        \subsubsection{Poses Data Preprocessing}
+            The AirSim recording mode, as we further explain, give us a text file with the following informations for each image: timestamp, x\_position, y\_position, z\_position, quaternions\_x, quaternions\_y, quaternions\_z, quaternions\_w and a filename of the image associated to that pose.
+            
+            As explained in \citeonline{quat_angle}, a quaternion is a four-element vector that can be used to encode any rotation in a 3D coordinate system.  Technically, a quaternion is composed of one real element and three complex elements, and it can be used for much more than rotations. For our work, we need the angles to be at an Euler representation. Euler angles provide a way to represent the 3D orientation of an object using a combination of three rotations about different axes.
+            
+            In order to transform the given angles to an Euler representaion we need to use the following equations:
+            
+            \begin{equation}
+                \phi = arctan(\frac{2(ab+cd)}{a^2 - b^2 - c^2 + d^2})
+            \end{equation}
+            \begin{equation}
+                \theta = -arcsin(2(bd-ac))
+            \end{equation}
+            \begin{equation}
+                \Psi = arctan(\frac{2(ad+bc)}{a^2 + b^2 - c^2 - d^2}
+            \end{equation}
+            
+            This can be easily done in \emph{Python} using the \emph{Scipy} \footnote{\url{https://docs.scipy.org/doc/scipy-1.2.1/reference/generated/scipy.spatial.transform.Rotation.html}} library.
+            
+            Another thing we had to do in order to process the information was make the first pose our start point, so we subtract all the other poses from the first one value. In addition, in addition we subtract all the poses, with the except of the firts, from the previous pose value, so, the network has to predict only the dislocate between two images.
+            
+    \subsection{Deep VO Implementation}
+        In order to simulate Wang's\cite{wang2017deepvo} paper for our dataset, we implemented the same RCNN model showed at Figure \ref{fig:2}.
+        
+        For implementing the model we used the PyTorch \footnote{\url{https://pytorch.org/}} library. All the convolutionals layers has a \emph{Conv2d} structure, followed by a \emph{BatchNorm2d} (batch normalization), and then a \emph{LeakyReLU} function (a Rectified Linear Activation Function) and in the end, a \emph{Dropout}.
+        
+        A convolution is the simple application of a filter to an input that results in an activation, the batch normalization reduces the amount by what the hidden unit values shift around (covariance shift). The activation function is responsible for transforming the summed weighted input from the node into the activation of the node or output for that input. And in the dropout stage, at each training stage, individual nodes are either dropped out of the net with probability 1-p or kept with probability p, so that a reduced network is left; incoming and outgoing edges to a dropped-out node are also removed.
+        
+        For the CNN part we tested two different configurations, which results will be further commented. We first fitted the model without any previous information and, in a second stage, we loaded pretrained weight of FlowNet network \footnote{\url{https://towardsdatascience.com/a-brief-review-of-flownet-dca6bd574de0}}.
+        
+        For the RNN part of the network, we had two \emph{LSTM} layers followed by a linear output, that receives 100 features as input and outputed 6 features (our pose). The Long Short-Term Memory (LSTM) networks are a modified version of recurrent neural networks, which makes it easier to remember past data in memory.
+        
+        To define the loss function we used the Mean Square Error, same as Wang's paper and which equations is defined at Equation \ref{eq:MSE}. The used optimizer was the Adagrad, an algorithm for gradient-based optimization that does just this: It adapts the learning rate to the parameters, performing smaller updates (i.e. low learning rates) for parameters associated with frequently occurring features, and larger updates (i.e. high learning rates) for parameters associated with infrequent features.

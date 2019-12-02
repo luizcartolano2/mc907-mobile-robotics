@@ -1,0 +1,86 @@
+%% Adaptado de 
+%% http://www.ctan.org/tex-archive/macros/latex/contrib/IEEEtran/
+%% Traduzido para o congresso de IC da USP
+%%*****************************************************************************
+% Não modificar
+
+\documentclass[twoside,conference,a4paper]{IEEEtran}
+\makeatletter
+\def\endthebibliography{%
+  \def\@noitemerr{\@latex@warning{Empty `thebibliography' environment}}%
+  \endlist
+}
+\makeatother
+
+
+%******************************************************************************
+% Não modificar
+\usepackage{IEEEtsup} % Definições complementares e modificações.
+\usepackage[utf8x]{inputenc} % Disponibiliza acentos.
+\usepackage[english,brazil]{babel}
+%% Disponibiliza Inglês e Português do Brasil.
+\usepackage{latexsym,amsfonts,amssymb} % Disponibiliza fontes adicionais.
+\usepackage{theorem} 
+\usepackage[cmex10]{amsmath} % Pacote matemático básico 
+\usepackage{url} 
+%\usepackage[portuges,brazil,english]{babel}
+\usepackage{graphicx}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{color}
+\usepackage[pagebackref=true,breaklinks=true,colorlinks,bookmarks=false]{hyperref}
+\usepackage[tight,footnotesize]{subfigure} 
+\usepackage[noadjust]{cite} % Disponibiliza melhorias em citações.
+\usepackage[]{algorithm2e}
+\usepackage{dirtytalk}
+\usepackage{lscape}
+
+%%*****************************************************************************
+
+\begin{document}
+    \selectlanguage{english}
+    \renewcommand{\IEEEkeywordsname}{Palavras-chave}
+    \definecolor{black}{gray}{0}    
+    %%*****************************************************************************
+    
+    \urlstyle{tt}
+    % Indicar o nome do autor e o curso/nível (grad-mestrado-doutorado-especial)
+    \title{Final Project - MC907 A}
+    \author{%
+        \IEEEauthorblockN{Luiz Eduardo Cartolano,\IEEEauthorrefmark{1}}
+        \IEEEauthorblockA{\IEEEauthorrefmark{1}
+                           Computer Engineer - Undergraduate \\
+                           \IEEEauthorrefmark{1}E-mail: l183012@students.ic.unicamp.br }
+    }
+    
+    %%*****************************************************************************
+    
+    \maketitle
+    
+    %%*****************************************************************************
+    \input{1-resumo.tex}
+    
+    % Indique três palavras-chave que descrevem o trabalho
+    \begin{IEEEkeywords}
+        Deep Learning - Visual Odometry - Robotics
+    \end{IEEEkeywords}
+    
+    %%*****************************************************************************
+    \input{2-introducao.tex}
+    \input{3-trabalho-proposto.tex}
+    \input{4-materiais-metodos.tex}        
+    \input{5-resultados-discussao.tex}
+    \input{6-conclusao.tex}
+        
+    %******************************************************************************
+    % Referências - Definidas no arquivo Relatorio.bib
+     +-------------+
+    
+    \bibliographystyle{IEEEtran}
+    \bibliography{relatorio}
+    %******************************************************************************
+    
+    \newpage
+    \input{7-anexos.tex}
+
+\end{document}
