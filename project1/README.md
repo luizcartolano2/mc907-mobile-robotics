@@ -9,10 +9,6 @@ The general objective of this work is to build, on the V-REP robotic simulator, 
 1. Implement the kinematic model of the differential robot P3DX and compute the robot odometry through its kinematic model.
 2. Acquire sensor data as the robot moves around and display features (point cloud, objects, etc.) extracted from them in global coordinates.
 
-## Project Goal
-
-These instructions will get you a copy of the project up and running on your local machine for development and testing purposes. See deployment for notes on how to deploy the project on a live system.
-
 ### Prerequisites
 
 What things you need to install the software and how to install them
