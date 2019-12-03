@@ -1,8 +1,15 @@
-# MC907 - Mobile Robotics
+# MC907 - Mobile Robotics - Project 1
 
 Repository to share projects and studies on mobile robotics. Course taught by the Institute of Computing of Unicamp.
 
-## Getting Started
+## Subject of this Work:
+The general objective of this work is to build, on the V-REP robotic simulator, an odometry and feature extraction system for the Pioneer P3-DX robot.
+
+### Goals:
+1. Implement the kinematic model of the differential robot P3DX and compute the robot odometry through its kinematic model.
+2. Acquire sensor data as the robot moves around and display features (point cloud, objects, etc.) extracted from them in global coordinates.
+
+## Project Goal
 
 These instructions will get you a copy of the project up and running on your local machine for development and testing purposes. See deployment for notes on how to deploy the project on a live system.
 
