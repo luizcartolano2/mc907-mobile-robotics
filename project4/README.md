@@ -1,10 +1,12 @@
-# MC907 - Mobile Robotics
+# MC907 - Mobile Robotics - Project 4
 
 Repository to share projects and studies on mobile robotics. Course taught by the Institute of Computing of Unicamp.
 
-## Getting Started
+## Subject of this Work:
+The general objective of this work is to implement a deep learning approach for solve the Visual Odometry problem.
 
-These instructions will get you a copy of the project up and running on your local machine for development and testing purposes. See deployment for notes on how to deploy the project on a live system.
+### Goals:
+1. Implement and evaluate a Deep VO strategy using images from the AirSim simulator.
 
 ### Prerequisites
 
@@ -12,6 +14,8 @@ What things you need to install the software and how to install them
 
 ```
 Python3 or later
+AirSim simulator
+Pretrained weight of FlowNet (CNN part) can be downloaded at https://drive.google.com/drive/folders/0B5EC7HMbyk3CbjFPb0RuODI3NmM
 ```
 
 ### Installing
