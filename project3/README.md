@@ -1,26 +1,10 @@
-# MC907 - Mobile Robotics
+# MC907 - Mobile Robotics - Project 3
 
 Repository to share projects and studies on mobile robotics. Course taught by the Institute of Computing of Unicamp.
 
-## Getting Started
+## Subject of this Work:
 
-These instructions will get you a copy of the project up and running on your local machine for development and testing purposes. See deployment for notes on how to deploy the project on a live system.
-
-### Prerequisites
-
-What things you need to install the software and how to install them
-
-```
-Python3 or later
-```
-
-### Installing
-
-A step by step series of examples that tell you how to get a development env running
-
-```
-pip3 install -r requirements.txt
-```
+A critical review about a robotics field, the Visual Odometry.
 
 ## Contributing
 
