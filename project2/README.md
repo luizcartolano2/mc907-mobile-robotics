@@ -1,10 +1,11 @@
-# MC907 - Mobile Robotics
+# MC907 - Mobile Robotics - Project 2
 
-Repository to share projects and studies on mobile robotics. Course taught by the Institute of Computing of Unicamp.
+## Subject of this Work:
+The general objective of this work is to implement and evaluate at least 1 robot control behavior per group member.
 
-## Getting Started
-
-These instructions will get you a copy of the project up and running on your local machine for development and testing purposes. See deployment for notes on how to deploy the project on a live system.
+### Goals:
+1. Implement and evaluate at least 1 robot control behavior per group member (AvoidObstacle, WallFollow, Go- ToGoal) using models based on PID, Fuzzy, Neural Networks, etc;
+2. Propose a behavior coordination strategy (state machine, planner, AR, subsumption, etc.)
 
 ### Prerequisites
 
